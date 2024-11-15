@@ -1,4 +1,4 @@
-﻿# Set the execution policy temporarily to unrestricted to allow this script to run
+# Set the execution policy temporarily to unrestricted to allow this script to run
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
 
 # Define output file path
@@ -29,6 +29,17 @@ if (Test-Path $outputFile) {
     Clear-Content $outputFile
 }
 
+# Function to generate random characters
+function Generate-RandomCharacters {
+    # Define the character set for the random characters
+    $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{};:,.<>?`~"
+    
+    # Generates random characters
+    $randomChars = -join (1..3 | ForEach-Object { $chars[(Get-Random -Minimum 0 -Maximum $chars.Length)] })
+    
+    return $randomChars
+}
+
 # Function to change password for local users
 function Change-LocalUserPasswords {
     # Get all local user accounts
@@ -41,13 +52,15 @@ function Change-LocalUserPasswords {
             # Generate a random password
             $newPassword = Generate-RandomPassword
 
+            $randomChars = Generate-RandomCharacters
+
             # Change the user's password
             try {
                 $password = ConvertTo-SecureString -String $newPassword -AsPlainText -Force
                 Set-LocalUser -Name $user.Name -Password $password
 
                 # Log the new password to the output file
-                Add-Content -Path $outputFile -Value "Local User: $($user.Name) - New Password: $newPassword"
+                Add-Content -Path $outputFile -Value "Local User: $($user.Name) - New Password: $newPassword$randomChars"
             }
             catch {
                 # Log any errors to the output file
@@ -69,14 +82,17 @@ function Change-DomainUserPasswords {
             # Generate a random password
             $newPassword = Generate-RandomPassword
 
+            # Generate 3 random characters to add to the log entry
+            $randomLogChars = Generate-RandomLogCharacters
+
             # Change the user's password
             try {
                 $securePassword = ConvertTo-SecureString -String $newPassword -AsPlainText -Force
                 # Remove the -Force parameter
                 Set-ADAccountPassword -Identity $user.SamAccountName -NewPassword $securePassword
 
-                # Log the new password to the output file
-                Add-Content -Path $outputFile -Value "Domain User: $($user.SamAccountName) - New Password: $newPassword"
+                # Log the new password and random characters to the output file
+                Add-Content -Path $outputFile -Value "Domain User: $($user.SamAccountName) - New Password: $newPassword$randomLogChars"
             }
             catch {
                 # Log any errors to the output file
@@ -97,3 +113,4 @@ Write-Output "Password change results saved to $outputFile"
 # Reinstate the execution policy to restricted after running the script
 Set-ExecutionPolicy -ExecutionPolicy Restricted -Scope Process
 Write-Output "Execution policy set back to Restricted."
+s
