@@ -47,25 +47,22 @@ function Change-LocalUserPasswords {
 
     # Loop through each user and change their password
     foreach ($user in $users) {
-        # Skip the built-in accounts to avoid locking yourself out
-        if ($user.Name -ne "Administrator" -and $user.Name -ne "Guest") {
-            # Generate a random password
-            $newPassword = Generate-RandomPassword
+        # Generate a random password
+        $newPassword = Generate-RandomPassword
 
-            $randomChars = Generate-RandomCharacters
+        $randomChars = Generate-RandomCharacters
 
-            # Change the user's password
-            try {
-                $password = ConvertTo-SecureString -String $newPassword -AsPlainText -Force
-                Set-LocalUser -Name $user.Name -Password $password
+        # Change the user's password
+        try {
+            $password = ConvertTo-SecureString -String $newPassword -AsPlainText -Force
+            Set-LocalUser -Name $user.Name -Password $password
 
-                # Log the new password to the output file
-                Add-Content -Path $outputFile -Value "Local User: $($user.Name) - New Password: $newPassword$randomChars"
-            }
-            catch {
-                # Log any errors to the output file
-                Add-Content -Path $outputFile -Value "Failed to change password for local user: $($user.Name). Error: $_"
-            }
+            # Log the new password to the output file
+            Add-Content -Path $outputFile -Value "Local User: $($user.Name) - New Password: $newPassword$randomChars"
+        }
+        catch {
+            # Log any errors to the output file
+            Add-Content -Path $outputFile -Value "Failed to change password for local user: $($user.Name). Error: $_"
         }
     }
 }
@@ -77,27 +74,24 @@ function Change-DomainUserPasswords {
 
     # Loop through each domain user and change their password
     foreach ($user in $domainUsers) {
-        # Skip the built-in accounts to avoid locking yourself out
-        if ($user.SamAccountName -ne "Administrator" -and $user.SamAccountName -ne "Guest") {
-            # Generate a random password
-            $newPassword = Generate-RandomPassword
+        # Generate a random password
+        $newPassword = Generate-RandomPassword
 
-            # Generate 3 random characters to add to the log entry
-            $randomLogChars = Generate-RandomLogCharacters
+        # Generate 3 random characters to add to the log entry
+        $randomChars = Generate-RandomCharacters
 
-            # Change the user's password
-            try {
-                $securePassword = ConvertTo-SecureString -String $newPassword -AsPlainText -Force
-                # Remove the -Force parameter
-                Set-ADAccountPassword -Identity $user.SamAccountName -NewPassword $securePassword
+        # Change the user's password
+        try {
+            $securePassword = ConvertTo-SecureString -String $newPassword -AsPlainText -Force
+            # Remove the -Force parameter
+            Set-ADAccountPassword -Identity $user.SamAccountName -NewPassword $securePassword
 
-                # Log the new password and random characters to the output file
-                Add-Content -Path $outputFile -Value "Domain User: $($user.SamAccountName) - New Password: $newPassword$randomLogChars"
-            }
-            catch {
-                # Log any errors to the output file
-                Add-Content -Path $outputFile -Value "Failed to change password for domain user: $($user.SamAccountName). Error: $_"
-            }
+            # Log the new password and random characters to the output file
+            Add-Content -Path $outputFile -Value "Domain User: $($user.SamAccountName) - New Password: $newPassword$randomChars"
+        }
+        catch {
+            # Log any errors to the output file
+            Add-Content -Path $outputFile -Value "Failed to change password for domain user: $($user.SamAccountName). Error: $_"
         }
     }
 }
