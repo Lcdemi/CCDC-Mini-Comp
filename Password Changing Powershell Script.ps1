@@ -113,4 +113,3 @@ Write-Output "Password change results saved to $outputFile"
 # Reinstate the execution policy to restricted after running the script
 Set-ExecutionPolicy -ExecutionPolicy Restricted -Scope Process
 Write-Output "Execution policy set back to Restricted."
-s
