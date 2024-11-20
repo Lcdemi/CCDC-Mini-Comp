@@ -102,6 +102,12 @@ Change-LocalUserPasswords
 # Change passwords for domain users
 Change-DomainUserPasswords
 
+#Disable Guest and Administrator Users
+Disable-LocalUser -Name "Guest"
+Disable-LocalUser -Name "Administrator"
+Disable-DomainUser -Name "Guest"
+Disable-DomainUser -Name "Administrator"
+
 Write-Output "Password change results saved to $outputFile"
 
 # Reinstate the execution policy to restricted after running the script
