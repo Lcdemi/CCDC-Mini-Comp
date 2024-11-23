@@ -7,7 +7,7 @@ $outputFile = "C:\PasswordChangeResults.txt"
 # Function to generate a random password
 function Generate-RandomPassword {
     param (
-        [int]$length = 12
+        [int]$length = 15
     )
     
     # Check if the length is valid
@@ -35,7 +35,7 @@ function Generate-RandomCharacters {
     $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{};:,.<>?`~"
     
     # Generates random characters
-    $randomChars = -join (1..3 | ForEach-Object { $chars[(Get-Random -Minimum 0 -Maximum $chars.Length)] })
+    $randomChars = -join (1..5 | ForEach-Object { $chars[(Get-Random -Minimum 0 -Maximum $chars.Length)] })
     
     return $randomChars
 }
